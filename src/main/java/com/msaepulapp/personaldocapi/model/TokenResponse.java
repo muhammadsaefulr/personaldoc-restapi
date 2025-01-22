@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class TokenResponse {
     private String token;
 
-    private String expiredAt;
+    private Long expiredAt;
 }

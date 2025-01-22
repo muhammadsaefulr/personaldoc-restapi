@@ -1,10 +1,8 @@
 package com.msaepulapp.personaldocapi.controller;
 
 import com.msaepulapp.personaldocapi.entity.UserEntity;
-import com.msaepulapp.personaldocapi.model.UpdateUserRequest;
-import com.msaepulapp.personaldocapi.model.UserRegisterRequest;
-import com.msaepulapp.personaldocapi.model.UserResponse;
-import com.msaepulapp.personaldocapi.model.WebResponse;
+import com.msaepulapp.personaldocapi.model.*;
+import com.msaepulapp.personaldocapi.service.AuthService;
 import com.msaepulapp.personaldocapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,6 +14,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthService authService;
+
     @PostMapping(
             path = "/users/register",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -26,11 +27,22 @@ public class UserController {
         return WebResponse.<String>builder().data("OK").build();
     }
 
+    @PostMapping(
+            path = "/users/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<TokenResponse> login(@RequestBody UserLoginRequest request){
+        TokenResponse tokenResponse = authService.authLogin(request);
+        return WebResponse.<TokenResponse>builder().data(tokenResponse).build();
+    }
+
     @GetMapping(
             path = "/users/current",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<UserResponse> getuser(UserEntity user){
+
+    public WebResponse<UserResponse> getuser(@RequestBody UserEntity user){
         UserResponse userResponse = userService.get(user);
         return WebResponse.<UserResponse>builder().data(userResponse).build();
     }
@@ -40,7 +52,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<UserResponse> update(UserEntity user,UpdateUserRequest request){
+    public WebResponse<UserResponse> update(UserEntity user,@RequestBody UpdateUserRequest request){
         UserResponse userResponse = userService.update(user, request);
         return WebResponse.<UserResponse>builder().data(userResponse).build();
     }
