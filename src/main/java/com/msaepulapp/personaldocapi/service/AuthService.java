@@ -42,7 +42,7 @@ public class AuthService {
     }
 
     private Long next30Days() {
-        return System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 30);
+        return System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 30);
     }
 
     @Transactional

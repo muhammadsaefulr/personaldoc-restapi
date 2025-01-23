@@ -42,6 +42,7 @@ public class UserService {
     }
 
     public UserResponse get(UserEntity user){
+        log.info("Info Username: ",user.getUsername());
         return UserResponse.builder()
                 .username(user.getUsername())
                 .description(user.getDescription())
@@ -51,6 +52,10 @@ public class UserService {
     @Transactional
     public UserResponse update(UserEntity user, UpdateUserRequest request){
         validationService.validate(request);
+
+        if(!userRepository.existsById(user.getUsername())){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users not found");
+        }
 
         log.info("Request: {}", request);
 
